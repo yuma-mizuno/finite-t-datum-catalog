@@ -8,8 +8,8 @@ research sources and the optional print editions to work.
 
 The catalogue contains 385 indecomposable scale-and-shift families with primitive
 positive diagonal symmetrizer and diagonal leading matrix: 2, 10, 24, 66, 95
-and 188 in ranks one through six. The 224 identity-symmetrizer records retain
-their original IDs and class numbers; `s` IDs add 161 nonidentity families.
+and 188 in ranks one through six. Class numbers form one sequence per rank, across all symmetrizers.
+For example, rank six has Classes 1–188 and IDs `r6-c01` through `r6-c188`.
 The six identity-symmetrizer rank-two records follow Mizuno's published Table 1.
 Scalar multiples of primitive symmetrizers and decomposable direct sums are
 described in the [classification document](../../research/symmetrizable/methods.html).
@@ -44,7 +44,11 @@ outside the scope.
 
 `catalogue.json` holds the entire document's records and structured proof
 outline. `records/` provides each datum separately, using stable IDs such as
-`r4-c19` or `s6-c80`. `record.schema.json` specifies the base record format.
+`r4-c19` or `r6-c188`. `record.schema.json` specifies the version 3 record format.
+The class number agrees with the number in the ID. Computational source
+packages retain their local indices; `provenance.source_record_id` and
+`provenance.source_class_number` identify those source entries. They do not
+define a second catalogue class sequence.
 
 `datum.N_plus[i][j]` and `datum.N_minus[i][j]` store an entry as a list of
 `[coefficient, exponent]` pairs, in increasing exponent order. Zero is `[]`.

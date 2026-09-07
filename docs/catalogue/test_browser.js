@@ -44,6 +44,8 @@ const url=pathToFileURL(path.join(root,'index.html')).href;
     assert.equal(data.records.find(r=>r.id===first).periodicity.labelled_period,Math.min(...data.records.map(r=>r.periodicity.labelled_period)));
     for(const r of data.records){
       await route(r.id);
+      assert.equal(await page.locator('#record-header h2').textContent(),'Class '+r.class_number);
+      assert.equal(await page.title(),'Rank '+r.rank+' · Class '+r.class_number+' | Finite T-data');
       const actual=await page.locator('#panel-matrices .matrix-section:not(.ratio-section) table').evaluateAll(tables=>tables.map(t=>[...t.rows].map(row=>[...row.cells].map(cell=>Number(cell.textContent.replace(/−/g,'-'))))));
       assert.deepEqual(actual,[r.datum.A_plus_1,r.datum.A_minus_1],r.id+' rendered constants');
       assert.equal(await page.locator('#panel-matrices table').count(),6);
@@ -54,6 +56,17 @@ const url=pathToFileURL(path.join(root,'index.html')).href;
       assert.deepEqual(multiplicities,r.exponents.multiplicities,r.id+' rendered spectrum');
       assert.equal(await page.locator('#spectrum [data-root]').count(),multiplicities.length);
     }
+    await page.click('[data-rank="6"]');
+    await route('r6-c108');
+    await page.selectOption('#sort','class');
+    const labels=await page.locator('.record-link strong').allTextContents();
+    assert.deepEqual(labels,Array.from({length:188},(_,i)=>'Class '+(i+1)));
+    await page.click('#next-record');
+    await page.waitForFunction(()=>document.querySelector('#record-header .eyebrow').textContent.endsWith('r6-c109'));
+    await page.fill('#search','r6-c109');assert.equal(await page.locator('.record-link').count(),1);
+    await page.fill('#search','');
+    await page.click('#previous-record');
+    await page.waitForFunction(()=>document.querySelector('#record-header .eyebrow').textContent.endsWith('r6-c108'));
     await route('r2-c02','notes');await page.locator('details.family-note').first().locator('summary').click();
     assert.match(await page.locator('#panel-notes').textContent(),/RSG\(3, 1\)/);
     assert.match(await page.locator('#panel-notes').textContent(),/generation order/);

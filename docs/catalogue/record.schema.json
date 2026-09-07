@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:t-datum:record:2.1.0",
+  "$id": "urn:t-datum:record:3.0.0",
   "title": "Finite T-datum catalogue record",
   "description": "Exact polynomial data with source-linked family and periodicity certificates. All array indices are zero-based; the reader displays one-based labels.",
   "type": "object",
@@ -25,14 +25,11 @@
   ],
   "properties": {
     "schema_version": {
-      "enum": [
-        "2.0.0",
-        "2.1.0"
-      ]
+      "const": "3.0.0"
     },
     "id": {
       "type": "string",
-      "pattern": "^[rs][1-9][0-9]*-c[0-9]{2,}$"
+      "pattern": "^r[1-9][0-9]*-c[0-9]{2,}$"
     },
     "rank": {
       "type": "integer",
@@ -40,7 +37,8 @@
     },
     "class_number": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "description": "Unique sequential class number within the rank, across all symmetrizers."
     },
     "constant_id": {
       "type": [
@@ -267,6 +265,15 @@
               }
             }
           }
+        },
+        "source_record_id": {
+          "type": "string",
+          "description": "Identifier in the computational source package."
+        },
+        "source_class_number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Class index local to the computational source package."
         }
       }
     },
@@ -344,7 +351,7 @@
         },
         "plot_path": {
           "type": "string",
-          "pattern": "^research/(catalogue|(higher_rank|symmetrizable)/rank[1-9][0-9]*)/plots/[rs][1-9][0-9]*-c[0-9]{2,}\\.svg$"
+          "pattern": "^docs/catalogue/plots/r[1-9][0-9]*-c[0-9]{2,}\\.svg$"
         },
         "multiplicities": {
           "type": "array",

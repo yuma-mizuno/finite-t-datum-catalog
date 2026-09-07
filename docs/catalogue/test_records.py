@@ -31,6 +31,34 @@ files=list((HERE/'records').glob('*.json'))
 assert len(files)==len(data['records'])
 assert [sum(r['rank']==rank and r['scope']['symmetrizer']=='identity' for r in data['records']) for rank in (1,2,3,4,5,6)]==[2,6,16,37,55,108]
 assert len(data['records'])==224+sum(r['new_nonidentity_families'] for r in data['symmetrizable_classifications'])
+# Catalogue IDs and displayed numbers share one sequence per rank.
+ids={r['id'] for r in data['records']}
+source_ids={r['id']:r['provenance']['source_record_id'] for r in data['records']}
+def source_references(value):
+    if isinstance(value,str):return source_ids.get(value,value)
+    if isinstance(value,list):return [source_references(x) for x in value]
+    if isinstance(value,dict):return {source_ids.get(k,k):source_references(v) for k,v in value.items()}
+    return value
+for rank in sorted({r['rank'] for r in data['records']}):
+    group=[r for r in data['records'] if r['rank']==rank]
+    assert [r['class_number'] for r in group]==list(range(1,len(group)+1))
+    assert [r['id'] for r in group]==[f'r{rank}-c{i:02d}' for i in range(1,len(group)+1)]
+    source_path=ROOT/f'research/symmetrizable/rank{rank}/catalogue-records.json'
+    source_records={x['id']:x for x in json.loads(source_path.read_text())} if source_path.exists() else {}
+    for r in group:
+        assert r['schema_version']=='3.0.0'
+        assert r['id']+':' in (ROOT/r['exponents']['plot_path']).read_text(encoding='utf8')
+        source_id=r['provenance']['source_record_id']
+        if r['scope']['symmetrizer']=='positive_diagonal':
+            original=source_records[source_id]
+            assert original['class_number']==r['provenance']['source_class_number']
+            for key in ('datum','family','periodicity','exchange','slice','matrix_ratios','verification'):
+                assert original[key]==source_references(r[key]),(r['id'],key)
+        for match in r['notes']['family']['identifications']:
+            if match.get('folding'):assert match['folding']['parent_record'] in ids
+assert len({(r['rank'],r['class_number']) for r in data['records']})==len(data['records'])
+print('PASS: one class sequence per rank, canonical IDs and SVG labels, source identity and unchanged mathematical records.')
+
 hashes={}
 with zipfile.ZipFile(ROOT/'research/rank4/smt_queries.zip') as archive:
     archive_names=archive.namelist()

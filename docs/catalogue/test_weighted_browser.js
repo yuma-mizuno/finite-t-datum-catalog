@@ -15,7 +15,7 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
       await page.goto(url+'#'+id+'/'+tab);
       await page.waitForFunction(([id,tab])=>document.querySelector('#record-header .eyebrow').textContent.endsWith(id)&&document.querySelector('#tab-'+tab).getAttribute('aria-selected')==='true',[id,tab]);
     }
-    await route('s2-c01');await page.locator('#navigator-filters summary').click();await page.selectOption('#symmetrizer-filter','positive_diagonal');
+    await route('r2-c07');await page.locator('#navigator-filters summary').click();await page.selectOption('#symmetrizer-filter','positive_diagonal');
     for(const rank of [...new Set(records.map(r=>r.rank))]){
       await page.click(`[data-rank="${rank}"]`);
       await page.waitForFunction(rank=>document.querySelector('#record-header .eyebrow').textContent.startsWith('Rank '+rank),rank);
@@ -47,7 +47,7 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
       const actual=await page.locator('#exchange-matrix table').evaluate(t=>[...t.rows].map(row=>[...row.cells].map(c=>Number(c.textContent.replace(/−/g,'-')))));
       assert.deepEqual(actual,r.notes.quiver.certificate.target_B);
     }
-    await route('s4-c05','notes');assert(await page.locator('a[href="#s5-c11/notes"]').count());
+    await route('r4-c42','notes');assert(await page.locator('a[href="#r5-c66/notes"]').count());
     await page.screenshot({path:path.join(qa,'weighted-notes.png'),fullPage:true});
     const folded=records.find(r=>r.notes.family.identifications.some(m=>m.category==='Fold'));
     if(folded){
@@ -59,14 +59,14 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
       assert(await detail.locator('a[href="#'+note.folding.parent_record+'/notes"]').count());
       await page.screenshot({path:path.join(qa,'weighted-fold-note.png'),fullPage:true});
     }
-    await route('s5-c40','matrices');
+    await route('r5-c95','matrices');
     const download=page.waitForEvent('download');await page.click('#export-tex');const tex=await download;await tex.saveAs(path.join(qa,'weighted.tex'));
     assert(fs.readFileSync(path.join(qa,'weighted.tex'),'utf8').includes('\\[ D = \\operatorname{diag}('));
     await page.screenshot({path:path.join(qa,'weighted-matrices.png'),fullPage:true});
-    await route('s5-c40','family');await page.fill('#scale','2');
+    await route('r5-c95','family');await page.fill('#scale','2');
     const liftDownload=page.waitForEvent('download');await page.click('#export-lift');const lift=await liftDownload;await lift.saveAs(path.join(qa,'weighted-lift.json'));
-    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(qa,'weighted-lift.json'),'utf8')).datum.symmetrizer,data.records.find(r=>r.id==='s5-c40').datum.symmetrizer);
-    await route('s5-c40','exponents');await page.screenshot({path:path.join(qa,'weighted-exponents.png'),fullPage:true});
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(qa,'weighted-lift.json'),'utf8')).datum.symmetrizer,data.records.find(r=>r.id==='r5-c95').datum.symmetrizer);
+    await route('r5-c95','exponents');await page.screenshot({path:path.join(qa,'weighted-exponents.png'),fullPage:true});
     const largest=records.reduce((a,b)=>a.slice.vertices>b.slice.vertices?a:b);
     await route(largest.id,'exponents');await page.screenshot({path:path.join(qa,'weighted-largest-exponents.png'),fullPage:true});
     const rank6=records.filter(r=>r.rank===6);

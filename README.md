@@ -6,8 +6,8 @@ exponents and reproducible classification certificates.
 
 The scope is primitive positive diagonal symmetrizers and diagonal leading
 matrix. There are 2, 10, 24, 66, 95 and 188 families in ranks one through six.
-The 224 identity-symmetrizer families retain their IDs; 161 nonidentity
-families have `s` IDs. The identity-symmetrizer rank-two completeness result
+Class numbers form a single sequence within each rank, across all
+symmetrizers. Each record has the corresponding ID `rN-cNN`. The identity-symmetrizer rank-two completeness result
 is published; the remaining classifications are computer-assisted and depend
 on the included exact-arithmetic programs and solver certificates. A missing family name means that no identification
 was found among the constructors and literature examples checked.

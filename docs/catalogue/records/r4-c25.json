@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": "3.0.0",
   "id": "r4-c25",
   "rank": 4,
   "class_number": 25,
@@ -1688,7 +1688,7 @@
     "signature_sha256": "d6bff16953fb5365154dccd84dce94833b2ef8684f4c9038d7876dc43679e7ad"
   },
   "provenance": {
-    "source_commit": "e58113b0c8e5d6e60c89f3a54ee6a3f080d9affc",
+    "source_commit": "72c78d0a8a8f1a5bcfc40998707e26e34cc82aa9",
     "verification_kind": "computer-assisted",
     "sources": [
       {
@@ -1721,7 +1721,7 @@
     "pdf": "docs/proofs/rank4-classification.pdf",
     "query_path": "research/rank4/smt_queries.zip",
     "query_member": "0469_coverage.smt2",
-    "enrichment_commit": "e58113b0c8e5d6e60c89f3a54ee6a3f080d9affc",
+    "enrichment_commit": "72c78d0a8a8f1a5bcfc40998707e26e34cc82aa9",
     "enrichment_sources": [
       {
         "path": "research/catalogue/spectral-data.json",
@@ -1748,7 +1748,9 @@
         "role": "Mizuno thesis, equations (3.2.1), (3.4.1) and Definition 3.4.4",
         "sha256": "7f323701bc113c469d041159ebb150ca6f683d9079d87ad5b3c1455fb10b88cb"
       }
-    ]
+    ],
+    "source_record_id": "r4-c25",
+    "source_class_number": 25
   },
   "matrix_ratios": {
     "A_plus_inverse_A_minus": [
@@ -2149,7 +2151,7 @@
       "method": "Interval Newton sums and discrete Fourier inversion on the exact period grid",
       "dependency": "Thesis Theorem 3.4.5 and the record’s universal periodicity certificate guarantee integral multiplicities."
     },
-    "plot_path": "research/catalogue/plots/r4-c25.svg"
+    "plot_path": "docs/catalogue/plots/r4-c25.svg"
   },
   "verification": {
     "matrix_ratios": "exact",

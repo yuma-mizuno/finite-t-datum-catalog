@@ -19,7 +19,7 @@ def main():
         if n not in reports:
             rows.append(f'<tr><td>{n}</td><td>{[0,2,6,16,37,55,108][n]}</td><td>Pending</td><td>Pending</td><td>Search running</td></tr>');continue
         r=reports[n];count=r['polynomial_families'];constants=r['constant_candidates'];new=r['new_nonidentity_families']
-        rows.append(f'<tr><td><a href="../../docs/catalogue/index.html#s{n}-c01/matrices">{n}</a></td><td>{r["identity_families"]}</td><td>{new}</td><td>{count}</td><td>Complete</td></tr>')
+        rows.append(f'<tr><td><a href="../../docs/catalogue/index.html#r{n}-c{r["identity_families"]+1:02d}/matrices">{n}</a></td><td>{r["identity_families"]}</td><td>{new}</td><td>{count}</td><td>Complete</td></tr>')
         proofs[str(n)]={'count':count,'status':'computer-assisted-complete','statistics':[[constants,'retained necessary constant triples'],[constants-count,'no polynomial lift'],[count,'complete periodic families'],[new,'with nonidentity primitive D']],
           'decomposable':'Take direct sums of indecomposable blocks with independent time scales, sign choices and positive integer scalar factors on block symmetrizers.',
           'steps':[

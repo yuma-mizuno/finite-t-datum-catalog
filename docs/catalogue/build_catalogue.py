@@ -46,6 +46,39 @@ def terms(a):
              for j in range(a.cols)] for i in range(a.rows)]
 
 
+def number_catalogue(records):
+    """Give every rank one class sequence, retaining source-package identifiers."""
+    counts={};identifiers={};numbers={}
+    for record in records:
+        rank=record['rank'];counts[rank]=counts.get(rank,0)+1
+        identifiers[record['id']]=f'r{rank}-c{counts[rank]:02d}'
+        numbers[record['id']]=counts[rank]
+    assert len(identifiers)==len(records)==len(set(identifiers.values()))
+
+    def references(value):
+        if isinstance(value,str):return identifiers.get(value,value)
+        if isinstance(value,list):return [references(item) for item in value]
+        if isinstance(value,dict):return {identifiers.get(key,key):references(item) for key,item in value.items()}
+        return value
+
+    result=[]
+    (HERE/'plots').mkdir(exist_ok=True)
+    for original in records:
+        source_id=original['id'];record=references(original)
+        record['class_number']=numbers[source_id]
+        record['schema_version']='3.0.0'
+        record['provenance']['source_record_id']=source_id
+        record['provenance']['source_class_number']=original['class_number']
+        plot=(ROOT/original['exponents']['plot_path']).read_text(encoding='utf8')
+        if source_id!=record['id']:
+            assert source_id+':' in plot,source_id
+            plot=plot.replace(source_id+':',record['id']+':')
+        record['exponents']['plot_path']=f'docs/catalogue/plots/{record["id"]}.svg'
+        write_atomic(ROOT/record['exponents']['plot_path'],plot)
+        result.append(record)
+    return result
+
+
 def main():
     records=[]
     commit=subprocess.check_output(['git','log','-1','--format=%H','--','research/rank3','research/rank4'],cwd=ROOT,text=True).strip()
@@ -175,7 +208,8 @@ def main():
             directory=(ROOT/provenance['query_path']).parent
             provenance['query_path']=archive_path(directory,provenance['query_member']).relative_to(ROOT).as_posix()
     records.sort(key=lambda x:(x['rank'],x['scope']['symmetrizer']!='identity',x['class_number']))
-    dataset={'schema_version':'2.1.0','title':'Finite T-data catalogue',
+    records=number_catalogue(records)
+    dataset={'schema_version':'3.0.0','title':'Finite T-data catalogue',
              'polynomial_encoding':'Each entry is a list of [coefficient, exponent] pairs, with ascending exponents.',
              'equivalence':['admissible rational time rescaling','species shifts','simultaneous index permutations','sign exchange'],
              'scope':f'Diagonal N0, primitive positive diagonal symmetrizers, indecomposable data. Complete symmetrizable ranks 1 through {max((r["rank"] for r in weighted),default=1)}; identity subcatalogue through rank {max(r["rank"] for r in records)}.',
@@ -184,6 +218,11 @@ def main():
              'symmetrizable_proofs':read('research/symmetrizable/proofs.json'),
              'source_commit':commit,'records':records,'proofs':json.loads((HERE/'proofs.json').read_text(encoding='utf-8'))}
     (HERE/'records').mkdir(exist_ok=True)
+    expected={r['id'] for r in records}
+    for folder,suffix in [('records','.json'),('plots','.svg')]:
+        for stale in (HERE/folder).glob('*'+suffix):
+            if re.fullmatch(r'[rs][1-9][0-9]*-c[0-9]{2,}',stale.stem) and stale.stem not in expected:
+                stale.unlink()
     for record in records:
         (HERE/'records'/f'{record["id"]}.json').write_text(json.dumps(record,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     write_atomic(HERE/'catalogue.json',json.dumps(dataset,ensure_ascii=False,indent=2)+'\n')

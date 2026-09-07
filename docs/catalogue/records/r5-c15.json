@@ -1,5 +1,5 @@
 {
-  "schema_version": "2.0.0",
+  "schema_version": "3.0.0",
   "id": "r5-c15",
   "rank": 5,
   "class_number": 15,
@@ -2333,7 +2333,9 @@
         "role": "independent quiver and Jacobian replay",
         "sha256": "1da9d39df42315ca951af4fbf0d43263374e29adb9148ae1c2a30cda92c07904"
       }
-    ]
+    ],
+    "source_record_id": "r5-c15",
+    "source_class_number": 15
   },
   "matrix_ratios": {
     "A_plus_inverse_A_minus": [
@@ -2711,7 +2713,7 @@
       "method": "Interval Newton sums and discrete Fourier inversion on the exact period grid",
       "dependency": "Thesis Theorem 3.4.5 and the record’s universal periodicity certificate guarantee integral multiplicities."
     },
-    "plot_path": "research/higher_rank/rank5/plots/r5-c15.svg"
+    "plot_path": "docs/catalogue/plots/r5-c15.svg"
   },
   "notes": {
     "family": {
